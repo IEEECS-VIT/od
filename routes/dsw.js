@@ -9,10 +9,10 @@ var OD = require(path.join(__dirname, '..', 'models', 'od'));
 router.use(util.allowedUsers(['DSW']));
 
 
-router.route('/export')
+router.route('/')
 .get(function(req, res, next)
 {
-    OD.find({ approved: true }).then(function(ods)
+    OD.find({ approved: true, '$gte': req.query.startDate, '$lt': req.query.endDate }).then(function(ods)
     {
         return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
     })
