@@ -2,7 +2,7 @@
 <html lang="en" ng-app="app">
 
 <head>
-  <title> OD | Approval </title>
+  <title> OD | DSW </title>
 
   <!-- Viewport mobile tag for sensible mobile support -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -31,58 +31,35 @@
   <div class="container" ng-controller="RegistrationCtrl">
       <div class="row">
           <div class="column column-40">
-              <h1 class="black"><b>Approval form - </b></h1>
+              <h1 class="black"><b>DSW Portal - </b></h1>
           </div>
         <div class="column float-right">
             <a class="button" href="/logout">Logout</a> </button>
         </div>
     </div>
 
-    <section ng-form="reg" id="register">
-          <h2 class="black"> Register for Events </h2>
+    <section id="date">
+        <h2 class="black"> Date </h2>
 
-          <div class="row">
-            <div class="column column-40" >
-              <input type="search" ng-model="searchQuery.$" placeholder="search query" value="" />
-            </div>
-            <div class="column column-10">
-                <select ng-model="searchQuery.subCategory" ng-options="val for val in eventCategories">
-                </select>
-            </div>
-            <div class="column column-10" >
-              <input type="number" min="0" ng-model="searchLimit" placeholder="limit"/>
-            </div>
-          </div>
-
-          <div class="container">
-        <div class="row">
-        <div class="columns column-30">
-            <table >
-                <tr ng-repeat="e in odsList | filter: searchQuery | limitTo:searchLimit">
-
-                    <td ng-bind="e.student.name"></td>
-                    <td ng-bind="e.date"></td>
-                    <td ng-bind="e.committee"></td>
-                    <td> <button class="button button-primary" ng-click="addOD(e)" ng-disabled="isAdded(e)"> <b> +  </b></button> </td>
-
-                </tr>
-            </table>
-          </div>
-
-          <div class="float-right columns column-20 column-offset-10">
-            <table>
-                <tr ng-repeat = "od in ods">
-                <td> {{ od.student.name }}</td>
-                <td>  <button class="button button-primary" ng-click="deleteOD($index)"> <b>- </b></button></td>
-                </tr>
-            </table>
-          </div>
-        </div>
-        </div>
-            <button class="button blackbutton" ng-click="confirm('approve?', approve );" > Approve Selected </button>
-            <button class="button blackbutton" ng-click="confirm('approve all?', approveAll ); " > ApproveAll </button>
-            <button class="button blackbutton" ng-click="confirm('refresh?', refresh );" > Refresh </button>
-        </section>
+        <label class="label">
+            Date
+            <input type="date" name="date" id="date" required ng-model="student.date"/>
+        </label>
+        <label>
+          Time:
+          <input type="radio" name="time" value="firstHalf" id="firstHalf" ng-model="student.time"/>
+          <small>First Half </small>
+          <input type="radio" name="time" value="secondHalf" id="secondHalf" ng-model="student.time"/>
+          <small>Second Half </small>
+          <input type="radio" name="time" value="fullDay" id="fullDay" ng-model="student.time"/>
+          <small>Full Day</small>
+        </label>
+        <label class="label">
+            Committee
+            <select name="committee" id="committee" required ng-model="student.committee" ng-options="val for val in committees">
+            </select>
+        </label>
+    </section>
 
     </div>
   <script src="/bower_components/angular/angular.min.js"></script>

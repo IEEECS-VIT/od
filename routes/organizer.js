@@ -16,7 +16,7 @@ router.route('/')
 
 
   res.render('apply');
-  
+
 });
 
 router.route('/student')
@@ -76,7 +76,8 @@ router.route('/apply')
         student : req.body._id, // student
         userId : req.user._id,
         date : req.body.date,
-        duration: req.body.duration
+        duration : req.body.duration,
+        committee : req.body.committee
       });
   newOD.save()
   .then(function (od)
