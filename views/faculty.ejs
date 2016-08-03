@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+  <title> OD | Approval </title>
+
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+  <!--STYLES-->
+  <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="/bower_components/milligram/dist/milligram.min.css">
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.min.css"/>
+  <link rel="stylesheet" href="/bower_components/vex/css/vex.css" />
+  <link rel="stylesheet" href="/bower_components/vex/css/vex-theme-os.css" />
+  <!--STYLES END-->
+  <style media="screen">
+      .blackbutton{
+          background-color: black;
+          border-color: black;
+      }
+      .black{
+          color:black;
+      }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" ng-controller="RegistrationCtrl">
+      <div class="row">
+          <div class="column column-40">
+              <h1 class="black"><b>Approval form - </b></h1>
+          </div>
+        <div class="column float-right">
+            <a class="button" href="/logout">Logout</a> </button>
+        </div>
+    </div>
+
+    <section ng-form="reg" id="register" ng-if="found == true">
+          <h2 class="black"> Register for Events </h2>
+
+          <div class="row">
+            <div class="column column-40" >
+              <input type="search" ng-model="searchQuery.$" placeholder="search query" value="" />
+            </div>
+            <div class="column column-10">
+                <select ng-model="searchQuery.subCategory" ng-options="val for val in eventCategories">
+                </select>
+            </div>
+            <div class="column column-10" >
+              <input type="number" min="0" ng-model="searchLimit" placeholder="limit"/>
+            </div>
+          </div>
+
+          <div class="container">
+      <div class="row">
+      <div class="columns column-30">
+          <table >
+              <tr ng-repeat="od in ods | filter: searchQuery | limitTo:searchLimit">
+
+                  <td ng-bind="od.student.name"></td>
+                  <td> <span> {{ e.organization.join(',') }} </span> </td>
+                  <td ng-bind="e.subCategory"></td>
+                  <td ng-bind="e.participationFee"></td>
+                  <td> <button class="button button-primary" ng-click="addEvent(e.name, e.participationFee)" ng-disabled="isAdded(e.name)"> <b> +  </b></button> </td>
+
+              </tr>
+          </table>
+          </div>
+
+          <div class="columns column-20 column-offset-10">
+          <table>
+              <tr ng-repeat = "event in events">
+              <td> {{ event.name }}</td>
+              <td> {{ event.price }}  </td>
+              <td>  <button class="button button-primary" ng-click="deleteEvent($index)"> <b>- </b></button></td>
+              </tr>
+              <tr class="black">
+                  <td>Total</td>
+                  <td>{{ computeSubTotal()   }}</td>
+                  <td></td>
+              </tr>
+          </table>
+          </div>
+      </div>
+      </div>
+            <button class="button blackbutton" ng-disabled="reg.$invalid" ng-click="approveAll();" > ApproveAll </button>
+            <button class="button blackbutton" ng-click="confirm('refresh?', refresh);" > Refresh </button>
+        </section>
+
+    </div>
+    </div>
+
+
+  </div>
+  <script src="/bower_components/angular/angular.min.js"></script>
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/vex/js/vex.combined.min.js"></script>
+  <script src="/bower_components/toastr/toastr.min.js"></script>
+
+  <script>
+  vex.defaultOptions.className = 'vex-theme-os';
+      toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    var app = angular.module('app', []);
+    app.controller('RegistrationCtrl', ['$scope', '$http', function ($scope, $http) {
+
+      $http.defaults.headers.common['Accept'] = 'application/json';
+      var content = `Please Wait...<br>Application in progress!`;
+
+      $scope.init = function()
+      {
+          console.log("Init!");
+          $scope.searchQuery = '';
+          $scope.searchLimit = 5;
+      }
+
+      $scope.init();
+
+      $http.get('/faculty/ods/').then(function (res)
+      {
+        $scope.odsList = res.data.ods;
+      },
+      function (res)
+      {
+        toastr["error"]("Please check your internet connection.");
+      });
+
+      $scope.checkout = function()
+      {
+          var defaultOptions={
+                content: content,
+                showCloseButton: false,
+                escapeButtonCloses: false,
+                overlayClosesOnClick: false,
+                appendLocation: 'body',
+                className: "vex-theme-os",
+                css: {},
+                overlayClassName: '',
+                overlayCSS: {},
+                contentClassName: '',
+                contentCSS: {},
+                closeClassName: '',
+                closeCSS: {}
+            }
+            vex.open(defaultOptions, function(data){
+                console.log(data);
+            });
+      }
+
+      $scope.confirm = function(m, cb)
+      {
+          vex.dialog.confirm(
+          {
+              message: "Are you sure you want to "+m,
+              callback : function(value)
+              {
+                  console.log("working!"+value);
+                  if(value){
+                      cb();
+                      $scope.$apply();
+                  }
+              },
+              buttons: [
+                        $.extend({}, vex.dialog.buttons.YES, {
+                          text: 'Yes'
+                        }), $.extend({}, vex.dialog.buttons.NO, {
+                          text: 'No'
+                        })
+                    ]
+            }
+         );
+      }
+
+      $scope.approve = function(i)
+      {
+         var payload = $scope.student;
+         $scope.checkout();
+         $http.post('/ods', payload)
+         .then(success, error)
+
+        function success(response)
+        {
+          toastr["success"]($scope.student._id+"\n"+$scope.student.name, "OD Applied Successfully!")
+          vex.close();
+          $scope.confirm('refresh the data?', $scope.init);
+        }
+
+        function error (response)
+        {
+          console.log(JSON.stringify(response, null, 2))
+          toastr["error"]("Please check your internet connection.","OD Application Failed!");
+         vex.close();
+        }
+      }
+    }]);
+  </script>
+
+</body>
+
+</html>
