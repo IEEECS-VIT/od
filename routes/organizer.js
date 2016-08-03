@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var Student = require(path.join(__dirname, '..', 'models', 'student'));
+var OD = require(path.join(__dirname, '..', 'models', 'od'));
 
 /* GET home page. */
 router.route('/')
@@ -51,6 +52,33 @@ router.route('/student')
       return res.json({ message: 'success', participant: student });
   })
   .catch(next);
-})
+});
+
+router.route('/apply')
+
+.post(function postRegister(req, res, next)
+{
+   /* POST /register.
+    *
+    * req.body must have keys: [student].
+    * req.body.student must have keys: [_id, name, startTime, endTime, date]
+    */
+
+    var newOD = new OD(
+        {
+          student : req.body._id, // student
+          userId : 'testing',
+          date : req.body.date,
+          startTime : req.body.startTime,
+          endTime : req.body.endTime
+        });
+  newOD.save()
+  .then(function (od)
+  {
+      od.message = 'success';
+      res.json(od);
+  })
+  .catch(next);
+});
 
 module.exports = router;

@@ -244,10 +244,7 @@
       $scope.applyOD = function()
       {
          if(invalid()){return;}
-         var payload =
-         {
-           studentId: $scope.student._id,
-         };
+         var payload = $scope.student;
          $scope.checkout();
          $http.post('/organizer/apply', payload)
          .then(success, error)
