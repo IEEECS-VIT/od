@@ -1,0 +1,17 @@
+{
+  "name": "od",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Saurabh Mathur <saurabhmathur96@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/IEEECS-VIT/od",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
