@@ -14,7 +14,7 @@ router.route('/')
   res.render('faculty');
 })
 
-router.route('/ods')
+router.route('/list')
 .get(function(req, res, next)
 {
     OD.find({}).populate('student').exec().then(function (ods)

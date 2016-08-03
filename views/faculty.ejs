@@ -54,7 +54,7 @@
             </div>
           </div>
 
-          <d      <div class="container">
+          <div class="container">
         <div class="row">
         <div class="columns column-30">
             <table >
@@ -79,16 +79,12 @@
           </div>
         </div>
         </div>
-            <button class="button blackbutton" ng-click="confirm('refresh?', approve )" > Approve Selected </button>
-            <button class="button blackbutton" ng-click="confirm('refresh?', approveAll ) " > ApproveAll </button>
+            <button class="button blackbutton" ng-click="confirm('approve?', approve );" > Approve Selected </button>
+            <button class="button blackbutton" ng-click="confirm('approve all?', approveAll ); " > ApproveAll </button>
             <button class="button blackbutton" ng-click="confirm('refresh?', refresh );" > Refresh </button>
         </section>
 
     </div>
-    </div>
-
-
-  </div>
   <script src="/bower_components/angular/angular.min.js"></script>
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
   <script src="/bower_components/vex/js/vex.combined.min.js"></script>
@@ -131,7 +127,7 @@
 
       $http.get('/faculty/ods/').then(function (res)
       {
-        console.log(res);
+        //console.log(res);
         $scope.odsList = res.data.ods;
       },
       function (res)
@@ -196,16 +192,17 @@
          );
       }
 
-      $scope.approve = function(i)
+      $scope.approve = function()
       {
-         var payload = $scope.ods.map(function(e){return e._id});
+         var payload = { ids : $scope.ods.map(function(e){return e._id}) };
+         console.log(payload);
          $scope.checkout();
-         $http.post('/ods', payload)
+         $http.post('/faculty/ods', payload)
          .then(success, error)
 
         function success(response)
         {
-          toastr["success"]($scope.student._id+"\n"+$scope.student.name, "OD Applied Successfully!")
+          toastr["success"]("Success", "OD Applied Successfully!")
           vex.close();
           $scope.confirm('refresh the data?', $scope.init);
         }
