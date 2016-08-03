@@ -4,23 +4,14 @@ var bcrypt = Promise.promisifyAll(require('bcrypt'));
 
 var SALT_WORK_FACTOR = 10;
 
-var OptionalDetails = new mongoose.Schema({
-    email: { type: String, required: true },
-    institute: { type: String, required: true },
-    gender: { type: String, required: true },
-    fullName: { type: String, required: true },
-    unpaidEventIds : [String]
-});
-
 var User = new mongoose.Schema({
     _id: String, // username
     password: { type: String, required: true },
     type: {
         type: String,
         required: true,
-        enum: ['organizer']
-    },
-    details: { type: OptionalDetails, required: false },
+        enum: ['organizer', 'faculty', 'DSW']
+    }
 });
 
 User.pre('save', function (next) {
