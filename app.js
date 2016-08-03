@@ -16,7 +16,7 @@ var bluebird = require('bluebird');
 require(path.join(__dirname, 'utilities', 'configure-passport'))(passport);
 
 mongoose.Promise = bluebird;
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost');
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/gravitas16-od');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

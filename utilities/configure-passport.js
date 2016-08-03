@@ -1,53 +1,57 @@
-var mongoose = require('mongoose');
-var Promise = require('bluebird');
-var bcrypt = Promise.promisifyAll(require('bcrypt'));
+var path = require('path');
+var LocalStrategy = require('passport-local');
+var User = require(path.join(__dirname, '..', 'models', 'user'));
 
-var SALT_WORK_FACTOR = 10;
+/**
+ * Configure passport.js with LocalStrategy.
+ */
 
-var OptionalDetails = new mongoose.Schema({
-    email: { type: String, required: true },
-    institute: { type: String, required: true },
-    gender: { type: String, required: true },
-    fullName: { type: String, required: true },
-    unpaidEventIds : [String]
-});
+module.exports = function (passport) 
+{
 
-var User = new mongoose.Schema({
-    _id: String, // username
-    password: { type: String, required: true },
-    type: {
-        type: String,
-        required: true,
-        enum: ['registration', 'external', 'organizer', 'sales']
-    },
-    details: { type: OptionalDetails, required: false },
-});
+    var strategy = new LocalStrategy(
+    function (username, password, done) 
+    {
+        var user = null;
 
-User.pre('save', function (next) {
-    var user = this;
+        User.findById(username).then(function (result) 
+      {
+            if (!result) 
+        {
+                var error = new Error('user not found');
+                error.status = 400;
+                throw error;
+            }
+            user = result;
+            return user.comparePassword(password);
+        })
+      .then(function (match) 
+      {
+          if (!match) 
+        {
+              var error = new Error('incorrect password');
+              error.status = 400;
+              throw error;
+          }
+          return done(null, user);
+      })
+      .catch(done);
+    });
 
-  // only hash the password if it has been modified (or is new)
-    if (!user.isModified('password')) return next();
+    passport.use(strategy);
 
-  // generate a salt
-    bcrypt.genSaltAsync(SALT_WORK_FACTOR)
-    .then(function (salt) {
-      // hash the password using our new salt
-        return bcrypt.hashAsync(user.password, salt);
-    })
-    .then(function (hash) {
+    passport.serializeUser(function (user, done) 
+  {
+        return done(null, user._id);
+    });
 
-      // override the cleartext password with the hashed one
-        user.password = hash;
-        next();
-    })
-    .catch(next);
+    passport.deserializeUser(function (id, done) 
+  {
+        User.findById(id, function (err, user) 
+    {
+            return done(err, user);
+        });
 
+    });
 
-});
-
-User.methods.comparePassword = function (candidatePassword) {
-    return bcrypt.compareAsync(candidatePassword, this.password);
 };
-
-module.exports = mongoose.model('User', User);
