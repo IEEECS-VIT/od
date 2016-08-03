@@ -12,7 +12,7 @@ router.use(util.allowedUsers(['DSW']));
 router.route('/export')
 .get(function(req, res, next)
 {
-    OD.find({ approved: true }).then(function(ods)
+    OD.find({ approved: true, '$gte': req.query.startDate, '$lt': req.query.endDate }).then(function(ods)
     {
         return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
     })
