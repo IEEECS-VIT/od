@@ -9,10 +9,20 @@ var OD = require(path.join(__dirname, '..', 'models', 'od'));
 router.use(util.allowedUsers(['faculty']));
 
 
-router.route('/ods')
+router.route('/ods/list')
 .get(function(req, res, next) 
 {
     OD.find({}).populate('student').exec().then(function (ods)
+    {
+        /* GET /ods/list od list. */
+        return res.json({ ods: ods })
+    }).catch(next);
+})
+
+router.route('/ods')
+.get(function(req, res, next) 
+{
+    OD.find({ approved: false }).populate('student').exec().then(function (ods)
     {
         /* GET /ods od list. */
         return res.json({ ods: ods })
@@ -33,7 +43,7 @@ router.route('/export')
 {
     OD.find({ approved: true }).then(function(ods)
     {
-        return res.csv(ods, { fields: ['student', 'userId', 'date', 'startTime', 'endTime']});
+        return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
     })
 })
 

@@ -5,8 +5,7 @@ var OD = new mongoose.Schema({
     student : { type: String, ref: 'Student', required: true }, // student
     userId : { type: String, ref: 'User', required: true },
     date : { type: Date, required: true },
-    startTime : { type: Date, required: true },
-    endTime : { type: Date, required: true },
+    duration: { type: String, enum: ['firstHalf', 'secondHalf', 'fullDay'] },
     approved: { type: Boolean, required: true, default: false }
 }, {
     timestamps: true

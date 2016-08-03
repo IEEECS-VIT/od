@@ -71,34 +71,14 @@ router.route('/apply')
     * req.body must have keys: [student].
     * req.body.student must have keys: [_id, name, startTime, endTime, date]
     */
-    try {
-      var today = moment().startOf('day').format();
-      today = momentTimezone(today, '', 'Asia/Kolkata').format();
-      var startTime = moment(today).add(req.body.startTime,'hours');
-      startTime = momentTimezone(startTime, '', 'Asia/Kolkata').format();
-      var endTime = moment(today).add(req.body.endTime,'hours');
-      endTime = momentTimezone(endTime, '', 'Asia/Kolkata').format();
-    } catch (e){
-      return next(e);
-    };
 
-
-    var today = moment().startOf('day').format();
-    var startTime = moment(today).add(req.body.startTime,'hours').format()
-    var endTime = moment(today).add(req.body.endTime,'hours').format()
-
-    OD.aggregate({ $match: {student: req.body._id}}, {$project: {'startTime':1 } }, {  $group: {_id: '$student', 'startTime': {$max: '$startTime'} } } ).then(function (docs)
-    {
-      console.log(docs);
-    });
     var newOD = new OD(
-        {
-          student : req.body._id, // student
-          userId : req.user._id,
-          date : req.body.date,
-          startTime : req.body.startTime,
-          endTime : req.body.endTime
-        });
+      {
+        student : req.body._id, // student
+        userId : req.user._id,
+        date : req.body.date,
+        duration: req.body.duration
+      });
   newOD.save()
   .then(function (od)
   {
