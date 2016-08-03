@@ -15,7 +15,7 @@ router.route('/ods')
     OD.find({}).exec().then(function (ods)
     {
         /* GET /ods od list. */
-        return res.json({ ods: ods });
+        return res.json({ ods: ods }).populate('student');
     }).catch(next);
 })
 .post(function(req, res, next) 

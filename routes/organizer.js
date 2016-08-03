@@ -70,10 +70,12 @@ router.route('/apply')
     var today = moment().startOf('day').format();
     var startTime = moment(today).add(req.body.startTime,'hours').format()
     var endTime = moment(today).add(req.body.endTime,'hours').format()
+
+    OD.aggregate({ $match: {student: req.body._id}}, {$project: 'startTime'}, {  $group: {_id: '$student', 'startTime': {$max: '$startTime'} } } )
     var newOD = new OD(
         {
           student : req.body._id, // student
-          userId : 'testing',
+          userId : req.user._id,
           date : req.body.date,
           startTime : req.body.startTime,
           endTime : req.body.endTime
