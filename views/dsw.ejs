@@ -38,28 +38,25 @@
         </div>
     </div>
 
-    <section id="date">
-        <h2 class="black"> Date </h2>
+    <div class="row">
+      <form id="dateForm" action="/dsw/export" method="get">
 
-        <label class="label">
-            Date
-            <input type="date" name="date" id="date" required ng-model="student.date"/>
-        </label>
-        <label>
-          Time:
-          <input type="radio" name="time" value="firstHalf" id="firstHalf" ng-model="student.time"/>
-          <small>First Half </small>
-          <input type="radio" name="time" value="secondHalf" id="secondHalf" ng-model="student.time"/>
-          <small>Second Half </small>
-          <input type="radio" name="time" value="fullDay" id="fullDay" ng-model="student.time"/>
-          <small>Full Day</small>
-        </label>
-        <label class="label">
-            Committee
-            <select name="committee" id="committee" required ng-model="student.committee" ng-options="val for val in committees">
-            </select>
-        </label>
-    </section>
+        <section id="date">
+          <h2 class="black"> Date </h2>
+
+          <label class="label-inline">
+            Start Date
+            <input type="date" name="startDate" id="startDate" required/>
+          </label>
+          <label class="label-inline">
+            End Date
+            <input type="date" name="endDate" id="endDate" required/>
+          </label>
+        </section>
+        <button ng-disabled="dateForm.$invalid" type="submit">Submit</button>
+      </form>
+
+    </div>
 
     </div>
   <script src="/bower_components/angular/angular.min.js"></script>

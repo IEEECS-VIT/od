@@ -11,10 +11,15 @@ var OD = require(path.join(__dirname, '..', 'models', 'od'));
 router.use(util.allowedUsers(['DSW']));
 
 
+router.route('/')
+.get(function(req, res, next){
+  res.render('dsw');
+})
+
 router.route('/export')
 .get(function(req, res, next)
 {
-    OD.find({ approved: true, '$gte': req.query.startDate, '$lt': req.query.endDate }).populate('student').then(function(ods)
+    OD.find({ approved: true, date: { '$gte': req.query.startDate, '$lt': req.query.endDate } }).populate('student').then(function(ods)
     {
         async.map(ods, function (e, next)
         {
@@ -36,8 +41,8 @@ router.route('/export')
                 return next(error);
             }
             return res.csv(results, { fields: ['studentId', 'date', 'studentName', 'duration']});
-        });        
-        
+        });
+
     })
 })
 
@@ -45,4 +50,3 @@ router.route('/export')
 
 
 module.exports = router;
-
