@@ -19,6 +19,16 @@ router.route('/ods')
 {
     OD.find({}).populate('student').exec().then(function (ods)
     {
+        /* GET /ods/list od full list. */
+        return res.json({ ods: ods })
+    }).catch(next);
+})
+
+router.route('/ods')
+.get(function(req, res, next)
+{
+    OD.find({ approved: false }).populate('student').exec().then(function (ods)
+    {
         /* GET /ods od list. */
         return res.json({ ods: ods })
     }).catch(next);
@@ -38,7 +48,7 @@ router.route('/export')
 {
     OD.find({ approved: true }).then(function(ods)
     {
-        return res.csv(ods, { fields: ['student', 'userId', 'date', 'startTime', 'endTime']});
+        return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
     })
 })
 

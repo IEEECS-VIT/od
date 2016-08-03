@@ -14,7 +14,7 @@ router.route('/export')
 {
     OD.find({ approved: true }).then(function(ods)
     {
-        return res.csv(ods, { fields: ['student', 'userId', 'date', 'startTime', 'endTime']});
+        return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
     })
 })
 
