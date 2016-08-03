@@ -6,7 +6,8 @@ var OD = new mongoose.Schema({
     userId : { type: String, ref: 'User', required: true },
     date : { type: Date, required: true },
     duration: { type: String, enum: ['firstHalf', 'secondHalf', 'fullDay'] },
-    approved: { type: Boolean, required: true, default: false }
+    approved: { type: Boolean, required: true, default: false },
+    committee: { type: String, required: true }
 }, {
     timestamps: true
 });
