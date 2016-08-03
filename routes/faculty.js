@@ -9,8 +9,13 @@ var OD = require(path.join(__dirname, '..', 'models', 'od'));
 router.use(util.allowedUsers(['faculty']));
 
 
+router.route('/')
+.get(function(req, res, next){
+  res.render('faculty');
+})
+
 router.route('/ods')
-.get(function(req, res, next) 
+.get(function(req, res, next)
 {
     OD.find({}).populate('student').exec().then(function (ods)
     {
@@ -18,7 +23,7 @@ router.route('/ods')
         return res.json({ ods: ods })
     }).catch(next);
 })
-.post(function(req, res, next) 
+.post(function(req, res, next)
 {
     OD.update({_id: {$in: req.body.ids }}, {$set: { approved: true }}, {multi: true}).exec().then(function ()
     {

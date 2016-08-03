@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <section ng-form="reg" id="register" ng-if="found == true">
+    <section ng-form="reg" id="register">
           <h2 class="black"> Register for Events </h2>
 
           <div class="row">
@@ -54,40 +54,34 @@
             </div>
           </div>
 
-          <div class="container">
-      <div class="row">
-      <div class="columns column-30">
-          <table >
-              <tr ng-repeat="od in ods | filter: searchQuery | limitTo:searchLimit">
+          <d      <div class="container">
+        <div class="row">
+        <div class="columns column-30">
+            <table >
+                <tr ng-repeat="e in odsList | filter: searchQuery | limitTo:searchLimit">
 
-                  <td ng-bind="od.student.name"></td>
-                  <td> <span> {{ e.organization.join(',') }} </span> </td>
-                  <td ng-bind="e.subCategory"></td>
-                  <td ng-bind="e.participationFee"></td>
-                  <td> <button class="button button-primary" ng-click="addEvent(e.name, e.participationFee)" ng-disabled="isAdded(e.name)"> <b> +  </b></button> </td>
+                    <td ng-bind="e.student.name"></td>
+                    <td ng-bind="e.date"></td>
+                    <td ng-bind="e.committee"></td>
+                    <td> <button class="button button-primary" ng-click="addOD(e)" ng-disabled="isAdded(e)"> <b> +  </b></button> </td>
 
-              </tr>
-          </table>
+                </tr>
+            </table>
           </div>
 
-          <div class="columns column-20 column-offset-10">
-          <table>
-              <tr ng-repeat = "event in events">
-              <td> {{ event.name }}</td>
-              <td> {{ event.price }}  </td>
-              <td>  <button class="button button-primary" ng-click="deleteEvent($index)"> <b>- </b></button></td>
-              </tr>
-              <tr class="black">
-                  <td>Total</td>
-                  <td>{{ computeSubTotal()   }}</td>
-                  <td></td>
-              </tr>
-          </table>
+          <div class="float-right columns column-20 column-offset-10">
+            <table>
+                <tr ng-repeat = "od in ods">
+                <td> {{ od.student.name }}</td>
+                <td>  <button class="button button-primary" ng-click="deleteOD($index)"> <b>- </b></button></td>
+                </tr>
+            </table>
           </div>
-      </div>
-      </div>
-            <button class="button blackbutton" ng-disabled="reg.$invalid" ng-click="approveAll();" > ApproveAll </button>
-            <button class="button blackbutton" ng-click="confirm('refresh?', refresh);" > Refresh </button>
+        </div>
+        </div>
+            <button class="button blackbutton" ng-click="confirm('refresh?', approve )" > Approve Selected </button>
+            <button class="button blackbutton" ng-click="confirm('refresh?', approveAll ) " > ApproveAll </button>
+            <button class="button blackbutton" ng-click="confirm('refresh?', refresh );" > Refresh </button>
         </section>
 
     </div>
@@ -130,12 +124,14 @@
           console.log("Init!");
           $scope.searchQuery = '';
           $scope.searchLimit = 5;
+          $scope.ods = [];
       }
 
       $scope.init();
 
       $http.get('/faculty/ods/').then(function (res)
       {
+        console.log(res);
         $scope.odsList = res.data.ods;
       },
       function (res)
@@ -165,6 +161,17 @@
             });
       }
 
+      $scope.addOD = function(od)
+      {
+        $scope.ods.push(od);
+        console.log($scope.ods);
+      }
+
+      $scope.deleteOD = function(index)
+      {
+        $scope.ods.splice(index, 1);
+      }
+
       $scope.confirm = function(m, cb)
       {
           vex.dialog.confirm(
@@ -191,7 +198,7 @@
 
       $scope.approve = function(i)
       {
-         var payload = $scope.student;
+         var payload = $scope.ods.map(function(e){return e._id});
          $scope.checkout();
          $http.post('/ods', payload)
          .then(success, error)
