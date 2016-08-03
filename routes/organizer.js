@@ -3,6 +3,9 @@ var router = express.Router();
 var path = require('path');
 var Student = require(path.join(__dirname, '..', 'models', 'student'));
 var OD = require(path.join(__dirname, '..', 'models', 'od'));
+var util = require(path.join(__dirname, '..', 'utilities', 'util'));
+
+router.use(util.allowedUsers(['organizer']));
 
 /* GET home page. */
 router.route('/')
@@ -63,7 +66,9 @@ router.route('/apply')
     * req.body must have keys: [student].
     * req.body.student must have keys: [_id, name, startTime, endTime, date]
     */
-
+    var today = moment().startOf('day').format();
+    var startTime = moment(today).add(8,'hours').format()
+    var endTime = moment(today).add(req.body.endTime,'hours').format()
     var newOD = new OD(
         {
           student : req.body._id, // student
