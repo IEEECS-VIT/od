@@ -13,5 +13,17 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "milligram": "^1.1.0",
+    "angular": "^1.5.5",
+    "toastr": "^2.1.3",
+    "angular-chosen": "*",
+    "chosen": "^1.6.1",
+    "vex": "^2.3.4"
+  },
+  "resolutions": {
+    "angular": "^1.5.5"
+  },
+  "private": true
 }
