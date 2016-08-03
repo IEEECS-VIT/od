@@ -14,7 +14,7 @@ router.route('/ods/list')
 {
     OD.find({}).populate('student').exec().then(function (ods)
     {
-        /* GET /ods/list od list. */
+        /* GET /ods/list od full list. */
         return res.json({ ods: ods })
     }).catch(next);
 })

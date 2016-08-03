@@ -68,8 +68,7 @@ router.route('/apply')
 {
    /* POST /register.
     *
-    * req.body must have keys: [student].
-    * req.body.student must have keys: [_id, name, startTime, endTime, date]
+    * req.body must have keys: [_id, name, startTime, endTime, date]
     */
 
     var newOD = new OD(
