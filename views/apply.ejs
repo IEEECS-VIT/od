@@ -78,11 +78,11 @@
             </label>
             <label class="label-inline">
                 Start Time
-                <input type="time" name="startTime" id="startTime" step="3600" required ng-model="student.startTime"/>
+                <input type="number" min="0" max="23" name="startTime" id="startTime" required ng-model="student.startTime"/>
             </label>
             <label class="label-inline">
                 End Time
-                <input type="time" name="endTime" id="endTime" step="3600" required ng-model="student.endTime"/>
+                <input type="number" name="endTime" min="0" max="23" id="endTime" required ng-model="student.endTime"/>
             </label>
             <label class="label">
                 Committee
@@ -90,11 +90,13 @@
                 </select>
             </label>
         </section>
-      </div>
-    </div>
-
 
       <button class="button blackbutton"  ng-disabled="apply.$invalid" ng-click="confirm('apply OD?', applyOD);" > Apply </button>
+      <button class="button blackbutton" ng-click="confirm('refresh the data?', init);" > New </button>
+
+    </div>
+    </div>
+
 
   </div>
   <script src="/bower_components/angular/angular.min.js"></script>
