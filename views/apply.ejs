@@ -67,13 +67,35 @@
         </section>
       </div>
     </div>
+    <div class="row" ng-if="found != null && created==true">
+      <div class="column column-40" ng-form="apply">
+        <section id="date">
+            <h2 class="black"> Date </h2>
+
+            <label class="label">
+                Date
+                <input type="date" name="date" id="date" required ng-model="student.date"/>
+            </label>
+            <label class="label-inline">
+                Start Time
+                <input type="time" name="startTime" id="startTime" step="3600" required ng-model="student.startTime"/>
+            </label>
+            <label class="label-inline">
+                End Time
+                <input type="time" name="endTime" id="endTime" step="3600" required ng-model="student.endTime"/>
+            </label>
+            <label class="label">
+                Committee
+                <select name="committee" id="committee" required ng-model="student.committee" ng-options="val for val in committees">
+                </select>
+            </label>
+        </section>
+      </div>
+    </div>
 
 
-      <button class="button blackbutton"   ng-click="confirm('apply OD?', applyOD);" > Apply </button>
+      <button class="button blackbutton"  ng-disabled="apply.$invalid" ng-click="confirm('apply OD?', applyOD);" > Apply </button>
 
-
-
-    </section>
   </div>
   <script src="/bower_components/angular/angular.min.js"></script>
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -104,16 +126,20 @@
 
       $http.defaults.headers.common['Accept'] = 'application/json';
       var content = `Please Wait...<br>Application in progress!`;
+
       $scope.init = function()
       {
           console.log("Init!");
           $scope.student = {
             _id: null,
-            name: null
+            name: null,
+            committee : "P & M"
           };
+          $scope.committees = ["P & M", "Tech Team", "Events", "R & R", "Sponsorship", "Media", "SGC", "Halls"]
           $scope.created = false;
           $scope.found = null;
       }
+
       $scope.init();
 
       $scope.findStudent = function()
@@ -155,50 +181,10 @@
 
         function error (response)
         {
-          console.log(response)
+          console.log(response);
           toastr["error"]("Please check your internet connection.","Student could not be created!");
         }
       };
-
-      var invalid = function()//end before start
-      {
-          var temp = $scope.events;
-          var alreadyReg = $scope.student.events;
-          console.log($scope.events);
-          if(!temp.length)
-          {
-              toastr["error"]("Please select atleast one event.", "No event selected!");
-              return true;
-          }
-          for (var i = 0; i < temp.length; i++)
-          {
-              for (var j = i + 1; j < temp.length; j++)
-              {
-                  if (temp[i].name == temp[j].name)
-                  {
-                      toastr["error"]("The event list contains duplicate entry! Please correct that and retry submitting the form.", "Duplicate Error!");
-                      return true;
-                  }
-              }
-          }
-          if($scope.student.events)
-          {
-
-              for (var i = 0; i < temp.length; i++)
-              {
-                  for (var j = 0; j < alreadyReg.length; j++)
-                  {
-                      if (temp[i].name == alreadyReg[j])
-                      {
-                          toastr["error"]("There's an event already registered! Please delete that and retry submitting the form.", "Duplicate Error!");
-                          return true;
-                      }
-                  }
-              }
-
-            }
-          return false;
-      }
 
       $scope.checkout = function()
       {
@@ -245,23 +231,30 @@
             }
          );
       }
-      $scope.submit = function()
+
+      var invalid = function()//end before start
+      {
+        if($scope.student.endTime<$scope.student.startTime){
+          toastr["error"]("End Time is less than Start time.", "Start - End Time error!");
+          return true;
+        }
+        return false;
+      }
+
+      $scope.applyOD = function()
       {
          if(invalid()){return;}
-         console.log($scope.events);
          var payload =
          {
            studentId: $scope.student._id,
-           payment: $scope.student.payment,
-           eventIds: $scope.events.map(function(event) { return event.name; })
          };
          $scope.checkout();
-         $http.post('/registration/register', payload)
+         $http.post('/organizer/apply', payload)
          .then(success, error)
 
         function success(response)
         {
-          toastr["success"]($scope.student._id+"\n"+$scope.student.name, "Registration Successful!")
+          toastr["success"]($scope.student._id+"\n"+$scope.student.name, "OD Applied Successfully!")
           vex.close();
           $scope.confirm('refresh the data?', $scope.init);
         }
@@ -269,8 +262,7 @@
         function error (response)
         {
           console.log(JSON.stringify(response, null, 2))
-          //alert('please check your internet connection.');
-          toastr["error"]("Please check your internet connection.","Registration failed!");
+          toastr["error"]("Please check your internet connection.","OD Application Failed!");
          vex.close();
         }
       }
