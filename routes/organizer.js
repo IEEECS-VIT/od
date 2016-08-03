@@ -11,7 +11,10 @@ router.use(util.allowedUsers(['organizer']));
 /* GET home page. */
 router.route('/')
 .get(function(req, res, next) {
+
+
   res.render('apply');
+  
 });
 
 router.route('/student')
@@ -71,7 +74,10 @@ router.route('/apply')
     var startTime = moment(today).add(req.body.startTime,'hours').format()
     var endTime = moment(today).add(req.body.endTime,'hours').format()
 
-    OD.aggregate({ $match: {student: req.body._id}}, {$project: 'startTime'}, {  $group: {_id: '$student', 'startTime': {$max: '$startTime'} } } )
+    OD.aggregate({ $match: {student: req.body._id}}, {$project: {'startTime':1 } }, {  $group: {_id: '$student', 'startTime': {$max: '$startTime'} } } ).then(function (docs)
+    {
+      console.log(docs);
+    });
     var newOD = new OD(
         {
           student : req.body._id, // student
