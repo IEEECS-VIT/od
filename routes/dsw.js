@@ -19,7 +19,7 @@ router.route('/')
 router.route('/export')
 .get(function(req, res, next)
 {
-    OD.find({ approved: true, date: { '$gte': req.query.startDate, '$lt': req.query.endDate } }).populate('student').then(function(ods)
+    OD.find({ approved: true, date: { '$gte': req.query.startDate, '$lte': req.query.endDate } }).populate('student').then(function(ods)
     {
         async.map(ods, function (e, next)
         {

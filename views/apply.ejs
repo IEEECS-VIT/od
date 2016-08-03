@@ -136,7 +136,8 @@
           $scope.student = {
             _id: null,
             name: null,
-            committee : "P & M"
+            committee : "P & M",
+            duration : "firstHalf"
           };
           $scope.committees = ["P & M", "Tech Team", "Events", "R & R", "Sponsorship", "Media", "SGC", "Halls"]
           $scope.created = false;
@@ -156,7 +157,7 @@
           $scope.student = {
             _id: response.data._id,
             name: response.data.name,
-            time: 'firstHalf',
+            duration: 'firstHalf',
             committee : "P & M"
           };
           $scope.found = true;
@@ -182,7 +183,7 @@
           toastr["success"]($scope.student._id+"\n"+$scope.student.name, "Student created!")
           $scope.found = true;
           $scope.created = true;
-          $scope.student.time = 'firstHalf';
+          $scope.student.duration = 'firstHalf';
           $scope.student.committee = "P & M";
         }
 
