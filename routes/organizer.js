@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var Student = require(path.join(__dirname, '..', 'models', 'student'));
+var util = require(path.join(__dirname, '..', 'utilities', 'util'))
+
+
+router.use(util.allowedUsers(['organizer']));
 
 /* GET home page. */
 router.route('/')

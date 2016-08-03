@@ -6,7 +6,8 @@ var OD = new mongoose.Schema({
     userId : { type: String, ref: 'User', required: true },
     date : { type: Date, required: true },
     startTime : { type: Date, required: true },
-    endTime : { type: Date, required: true }
+    endTime : { type: Date, required: true },
+    approved: { type: Boolean, required: true, default: false }
 }, {
     timestamps: true
 });
