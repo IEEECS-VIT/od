@@ -76,13 +76,14 @@
                 Date
                 <input type="date" name="date" id="date" required ng-model="student.date"/>
             </label>
-            <label class="label-inline">
-                Start Time
-                <input type="number" min="0" max="23" name="startTime" id="startTime" required ng-model="student.startTime"/>
-            </label>
-            <label class="label-inline">
-                End Time
-                <input type="number" name="endTime" min="0" max="23" id="endTime" required ng-model="student.endTime"/>
+            <label>
+              Time:
+              <input type="radio" name="time" value="firstHalf" id="firstHalf" ng-model="student.time"/>
+              <small>First Half </small>
+              <input type="radio" name="time" value="secondHalf" id="secondHalf" ng-model="student.time"/>
+              <small>Second Half </small>
+              <input type="radio" name="time" value="fullDay" id="fullDay" ng-model="student.time"/>
+              <small>Full Day</small>
             </label>
             <label class="label">
                 Committee
@@ -154,7 +155,9 @@
         {
           $scope.student = {
             _id: response.data._id,
-            name: response.data.name
+            name: response.data.name,
+            time: 'firstHalf',
+            committee : "P & M"
           };
           $scope.found = true;
           $scope.created = true;
@@ -179,6 +182,8 @@
           toastr["success"]($scope.student._id+"\n"+$scope.student.name, "Student created!")
           $scope.found = true;
           $scope.created = true;
+          $scope.student.time = 'firstHalf';
+          $scope.student.committee = "P & M";
         }
 
         function error (response)
