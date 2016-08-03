@@ -8,7 +8,7 @@ var util = require(path.join(__dirname, '..', 'utilities', 'util'));
 var moment = require('moment');
 var momentTimezone = require('moment-timezone').tz;
 
-//router.use(util.allowedUsers(['organizer']));
+router.use(util.allowedUsers(['organizer']));
 
 /* GET home page. */
 router.route('/')
