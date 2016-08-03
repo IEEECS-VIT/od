@@ -2,6 +2,8 @@ var express = require('express');
 var jsoncsv = require('express-json-csv')(express);
 var router = express.Router();
 var path = require('path');
+
+var async = require('async');
 var Student = require(path.join(__dirname, '..', 'models', 'student'));
 var util = require(path.join(__dirname, '..', 'utilities', 'util'))
 var OD = require(path.join(__dirname, '..', 'models', 'od'));
@@ -9,12 +11,33 @@ var OD = require(path.join(__dirname, '..', 'models', 'od'));
 router.use(util.allowedUsers(['DSW']));
 
 
-router.route('/')
+router.route('/export')
 .get(function(req, res, next)
 {
-    OD.find({ approved: true, '$gte': req.query.startDate, '$lt': req.query.endDate }).then(function(ods)
+    OD.find({ approved: true, '$gte': req.query.startDate, '$lt': req.query.endDate }).populate('student').then(function(ods)
     {
-        return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
+        async.map(ods, function (e, next)
+        {
+            e.date = new Date(e.date.getTime() + 19800000).toLocaleDateString("en-gb")
+            e.studentName = e.student.name;
+            e.studentId = e.student._id;
+            next(null,
+            {
+                date: new Date(e.date.getTime() + 19800000).toLocaleDateString("en-gb"),
+                studentName: e.student.name,
+                studentId: e.student._id,
+                duration: e.duration
+            })
+
+        }, function (error, results)
+        {
+            if (error)
+            {
+                return next(error);
+            }
+            return res.csv(results, { fields: ['studentId', 'date', 'studentName', 'duration']});
+        });        
+        
     })
 })
 

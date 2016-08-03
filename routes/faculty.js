@@ -43,14 +43,5 @@ router.route('/ods')
 })
 
 
-router.route('/export')
-.get(function(req, res, next)
-{
-    OD.find({ approved: true }).then(function(ods)
-    {
-        return res.csv(ods, { fields: ['student', 'userId', 'date', 'duration']});
-    })
-})
-
 
 module.exports = router;
