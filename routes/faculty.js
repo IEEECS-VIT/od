@@ -12,10 +12,10 @@ router.use(util.allowedUsers(['faculty']));
 router.route('/ods')
 .get(function(req, res, next) 
 {
-    OD.find({}).exec().then(function (ods)
+    OD.find({}).populate('student').exec().then(function (ods)
     {
         /* GET /ods od list. */
-        return res.json({ ods: ods }).populate('student');
+        return res.json({ ods: ods })
     }).catch(next);
 })
 .post(function(req, res, next) 
