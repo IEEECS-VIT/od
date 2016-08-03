@@ -18,9 +18,6 @@ router.route('/export')
     {
         async.map(ods, function (e, next)
         {
-            e.date = new Date(e.date.getTime() + 19800000).toLocaleDateString("en-gb")
-            e.studentName = e.student.name;
-            e.studentId = e.student._id;
             next(null,
             {
                 date: new Date(e.date.getTime() + 19800000).toLocaleDateString("en-gb"),
