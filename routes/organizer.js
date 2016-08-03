@@ -67,7 +67,7 @@ router.route('/apply')
     * req.body.student must have keys: [_id, name, startTime, endTime, date]
     */
     var today = moment().startOf('day').format();
-    var startTime = moment(today).add(8,'hours').format()
+    var startTime = moment(today).add(req.body.startTime,'hours').format()
     var endTime = moment(today).add(req.body.endTime,'hours').format()
     var newOD = new OD(
         {
