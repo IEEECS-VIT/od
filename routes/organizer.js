@@ -6,7 +6,7 @@ var Student = require(path.join(__dirname, '..', 'models', 'student'));
 var OD = require(path.join(__dirname, '..', 'models', 'od'));
 var util = require(path.join(__dirname, '..', 'utilities', 'util'));
 var moment = require('moment');
-var momentTimezone = require('moment-timezone');
+var momentTimezone = require('moment-timezone').tz;
 
 //router.use(util.allowedUsers(['organizer']));
 
@@ -71,7 +71,6 @@ router.route('/apply')
     * req.body must have keys: [student].
     * req.body.student must have keys: [_id, name, startTime, endTime, date]
     */
-<<<<<<< HEAD
     try {
       var today = moment().startOf('day').format();
       today = momentTimezone(today, '', 'Asia/Kolkata').format();
@@ -80,17 +79,10 @@ router.route('/apply')
       var endTime = moment(today).add(req.body.endTime,'hours');
       endTime = momentTimezone(endTime, '', 'Asia/Kolkata').format();
     } catch (e){
-      return ext(e);
+      return next(e);
     };
 
-    var newOD = new OD(
-        {
-          student : req.body._id, // student
-          userId : 'testing',
-          date : today,
-          startTime : startTime,
-          endTime : endTime
-=======
+
     var today = moment().startOf('day').format();
     var startTime = moment(today).add(req.body.startTime,'hours').format()
     var endTime = moment(today).add(req.body.endTime,'hours').format()
@@ -106,7 +98,6 @@ router.route('/apply')
           date : req.body.date,
           startTime : req.body.startTime,
           endTime : req.body.endTime
->>>>>>> 15ea3d5c3ac46c9e11d59eb188b9594474e3444f
         });
   newOD.save()
   .then(function (od)
